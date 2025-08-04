@@ -1,9 +1,17 @@
 using CategoryServices.Services;
+using Couchbase.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddGrpc();
+
+builder.Services.AddCouchbase(client =>
+{
+    client.ConnectionString = "couchbase://127.0.0.1";
+    client.UserName = "Admin";
+    client.Password = "1qaz2wsx";
+});
 
 var app = builder.Build();
 
