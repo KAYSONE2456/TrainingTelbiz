@@ -1,4 +1,7 @@
 ﻿using Couchbase.Extensions.DependencyInjection;
+using SharedResource.Config;
+using SharedResource.DTOs;
+using SharedResource.Entities;
 
 namespace CategoryServices.Repository
 {
@@ -11,6 +14,21 @@ namespace CategoryServices.Repository
         {
             this.bucketProvider = bucketProvider;
             this.logger = logger;
+        }
+        public async Task<bool> Save(CategoryDTOs request)
+        {
+            try
+            {
+                var bucket = await bucketProvider.GetBucketAsync(DBConfig.bucket);
+                var scope = await bucket.ScopeAsync(DBConfig.scope);
+                var collection = await scope.CollectionAsync(DBCollection.category);
+                await collection.InsertAsync(request.ID!, request);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }
